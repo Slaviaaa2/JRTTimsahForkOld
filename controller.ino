@@ -66,12 +66,12 @@ bool RxController(void){
     //Serial.print(", RxData[6]= ");
     //Serial.println(RxData[6]);
 
-    return ControllerTimeout = false;
+    ControllerTimeout = false;
 
-  }else if((millis() - ControllerRxTime) > 300){  //タイムアウト
+  }else if((millis() - ControllerRxTime) > 2000){  //タイムアウト
     for (int i = 0; i < 7; i++){
       RxData[i] = 0;
     }
-    return ControllerTimeout = true;
+    ControllerTimeout = true;
   }
 }

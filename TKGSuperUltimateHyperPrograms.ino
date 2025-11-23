@@ -80,8 +80,22 @@ void loop() {
   // if((AF_Signal1 == 0) && (SW_ENABLE == 1) && !EMG_Stop && !ControllerTimeout){
   if((AF_Signal1 == 0) && (SW_ENABLE == 1) && !ControllerTimeout){
     OperationReady = 1;
+    Serial.println("ControllerStatus: Ready");
   }else{
     OperationReady = 0;
+    if(SW_ENABLE == 0){
+      Serial.println("ControllerStatus: Locked");
+    }
+    else{
+      Serial.println("ERR: Controller Connection not Successfully.");
+      Serial.print("ControllerStatus: Unknown(Operation: Not Ready) ");
+      Serial.print(", AF_Signal1:");
+      Serial.print(AF_Signal1);
+      Serial.print(", SW_ENABLE:");
+      Serial.print(SW_ENABLE);
+      Serial.print(", ControllerTimeout:");
+      Serial.println(ControllerTimeout);
+    }
   }
   SensorDebugLED();   //init.ino
 
