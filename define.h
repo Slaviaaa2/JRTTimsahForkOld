@@ -57,10 +57,12 @@ SERVO   ： 1 ~ 3
 #define DIR8  61
 
 #define SERVO1 13
-//#define SERVO2 12
-//#define SERVO3 11
-#define SERVO2 11
-#define SERVO3 12
+
+// SERVO2,3に問題あり。現在defineを古いほうに切り替えてます。変更するときは両defineのコメント状態を逆にすること。
+#define SERVO2 12 // Old Define
+#define SERVO3 11 // Too
+//#define SERVO2 11 // New Define
+//#define SERVO3 12 // Too
 
 #define AF1 62
 #define AF2 63
