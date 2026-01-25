@@ -37,7 +37,7 @@ Arduinoシールド ：Ver.2024
 //====================
 #define WHEEL_L MOTOR1
 #define WHEEL_R MOTOR2
-#define ROLLER  MOTOR3
+#define ROLLER  SERVO3
 #define PITCH   SERVO1
 #define SHOT    SERVO2
 
@@ -131,3 +131,4 @@ void loop() {
     delayMicroseconds(10);
   }
 }
+
