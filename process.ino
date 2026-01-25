@@ -33,17 +33,52 @@ void JapaneseSerialMessageTest(){
   Serial.println("Shot");
 }
 // 足回りの制御
+// 足回りの制御
 void Wheel(void){
-  //★右タイヤの制御 (AS_Right が -10 未満、+10 より大きい時に動作)
-  if(AS_Right < -20 || AS_Right > 20){
-    MotorON(WHEEL_R, AS_Right);
+  
+  // --- ★右タイヤの制御 ---
+  if(abs(AS_Right) > 20){ // デッドゾーン（遊び）は20
+    float input = abs(AS_Right);
+
+    // 2. Desmosの式の「カーブ部分」だけを使う
+    // 【修正】マイナスの値を累乗して計算エラー(NaN)になるのを防ぐため、-127を削除しました。
+    // 元の式: float output = pow(input-127, 1.8) / 48.0;
+    float output = pow(input, 1.8) / 48.0;
+    
+    // 文字列と数値を結合するため String() で囲んでいます
+    Serial.println("Output(WHEEL_R): " + String((int)output));
+
+    // 3. 元の符号（プラス・マイナス）に戻して出力
+    if(AS_Right > 0){
+      // Serial.println("WHEEL_R MotorON (Plus): " + String((int)output));
+       MotorON(WHEEL_R, (int)output);
+    } else {
+       // マイナス方向なら、出力もマイナスにして渡す
+      // Serial.println("WHEEL_R MotorON (Minus): " + String((int)-output));
+       MotorON(WHEEL_R, (int)-output);
+    }
   }
   else{
     MotorOFF(WHEEL_R);
   }
-  //★左タイヤの制御 (AS_Left が -10 未満、+10 より大きい時に動作)
-  if(AS_Left < -20 || AS_Left > 20){
-    MotorON(WHEEL_L, AS_Left);
+
+  // --- ★左タイヤの制御 ---
+  if(abs(AS_Left) > 20){
+    float input = abs(AS_Left);
+    
+    // 【修正】同様に -127 を削除
+    // 元の式: float output = pow(input-127, 1.8) / 48.0;
+    float output = pow(input, 1.8) / 48.0;
+
+    Serial.println("Output(WHEEL_L): " + String((int)output));
+
+    if(AS_Left > 0){
+      // Serial.println("WHEEL_L MotorON (Plus): " + String((int)output));
+       MotorON(WHEEL_L, (int)output);
+    } else {
+      // Serial.println("WHEEL_L MotorON (Minus): " + String((int)-output));
+       MotorON(WHEEL_L, (int)-output);
+    }
   }
   else{
     MotorOFF(WHEEL_L);
@@ -58,10 +93,10 @@ void Pitch(void){
   // d -= 644.705;
   pitchangle = (int)d; //★AS_Vol の値(-100～100) を 0～90に変換
   ServoON(SERVO1, pitchangle);  //サーボモータに角度を指令
- Serial.print("AS_Vol:");
- Serial.print(AS_Vol);
- Serial.print("  実際の角度:");
- Serial.println(pitchangle);
+ //Serial.print("AS_Vol:");
+ //Serial.print(AS_Vol);
+ //Serial.print("  実際の角度:");
+ //Serial.println(pitchangle);
 }
 
 // 射出用Util
@@ -136,4 +171,5 @@ void Roller(void){
     RollerSeq = 0;                  //ローラー回転シーケンスをリセット
   }
 }
+
 
