@@ -15,6 +15,7 @@ Arduinoシールド ：Ver.2024
 #include <string.h>
 #include <SPI.h>
 #include "define.h"
+#include <math.h>
 
 #define BITRATE 115200
 
@@ -120,6 +121,7 @@ void loop() {
 
     MotorAllOFF();
     ServoON(SHOT, waitangle);
+    ServoON(ROLLER, 0);
 
     if (AF_Signal1 == 1) {
       Buzzer1ON();

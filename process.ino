@@ -33,22 +33,28 @@ void JapaneseSerialMessageTest(){
   Serial.println("Shot");
 }
 // 足回りの制御
+// 足回りの制御
 void Wheel(void){
   
   // --- ★右タイヤの制御 ---
   if(abs(AS_Right) > 20){ // デッドゾーン（遊び）は20
-    // 1. 絶対値にする（マイナスの値を1.8乗計算できないため）
     float input = abs(AS_Right);
 
     // 2. Desmosの式の「カーブ部分」だけを使う
-    // 式: 入力^1.8 ÷ 48
-    float output = pow(input-127, 1.8) / 48.0;
+    // 【修正】マイナスの値を累乗して計算エラー(NaN)になるのを防ぐため、-127を削除しました。
+    // 元の式: float output = pow(input-127, 1.8) / 48.0;
+    float output = pow(input, 1.8) / 48.0;
+    
+    // 文字列と数値を結合するため String() で囲んでいます
+    Serial.println("Output(WHEEL_R): " + String((int)output));
 
     // 3. 元の符号（プラス・マイナス）に戻して出力
     if(AS_Right > 0){
+      // Serial.println("WHEEL_R MotorON (Plus): " + String((int)output));
        MotorON(WHEEL_R, (int)output);
     } else {
        // マイナス方向なら、出力もマイナスにして渡す
+      // Serial.println("WHEEL_R MotorON (Minus): " + String((int)-output));
        MotorON(WHEEL_R, (int)-output);
     }
   }
@@ -60,12 +66,17 @@ void Wheel(void){
   if(abs(AS_Left) > 20){
     float input = abs(AS_Left);
     
-    // 同じ計算式
-    float output = pow(input-127, 1.8) / 48.0;
+    // 【修正】同様に -127 を削除
+    // 元の式: float output = pow(input-127, 1.8) / 48.0;
+    float output = pow(input, 1.8) / 48.0;
+
+    Serial.println("Output(WHEEL_L): " + String((int)output));
 
     if(AS_Left > 0){
+      // Serial.println("WHEEL_L MotorON (Plus): " + String((int)output));
        MotorON(WHEEL_L, (int)output);
     } else {
+      // Serial.println("WHEEL_L MotorON (Minus): " + String((int)-output));
        MotorON(WHEEL_L, (int)-output);
     }
   }
@@ -82,10 +93,10 @@ void Pitch(void){
   // d -= 644.705;
   pitchangle = (int)d; //★AS_Vol の値(-100～100) を 0～90に変換
   ServoON(SERVO1, pitchangle);  //サーボモータに角度を指令
- Serial.print("AS_Vol:");
- Serial.print(AS_Vol);
- Serial.print("  実際の角度:");
- Serial.println(pitchangle);
+ //Serial.print("AS_Vol:");
+ //Serial.print(AS_Vol);
+ //Serial.print("  実際の角度:");
+ //Serial.println(pitchangle);
 }
 
 // 射出用Util
