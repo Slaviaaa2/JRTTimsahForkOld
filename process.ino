@@ -34,16 +34,40 @@ void JapaneseSerialMessageTest(){
 }
 // 足回りの制御
 void Wheel(void){
-  //★右タイヤの制御 (AS_Right が -10 未満、+10 より大きい時に動作)
-  if(AS_Right < -20 || AS_Right > 20){
-    MotorON(WHEEL_R, AS_Right);
+  
+  // --- ★右タイヤの制御 ---
+  if(abs(AS_Right) > 20){ // デッドゾーン（遊び）は20
+    // 1. 絶対値にする（マイナスの値を1.8乗計算できないため）
+    float input = abs(AS_Right);
+
+    // 2. Desmosの式の「カーブ部分」だけを使う
+    // 式: 入力^1.8 ÷ 48
+    float output = pow(input-127, 1.8) / 48.0;
+
+    // 3. 元の符号（プラス・マイナス）に戻して出力
+    if(AS_Right > 0){
+       MotorON(WHEEL_R, (int)output);
+    } else {
+       // マイナス方向なら、出力もマイナスにして渡す
+       MotorON(WHEEL_R, (int)-output);
+    }
   }
   else{
     MotorOFF(WHEEL_R);
   }
-  //★左タイヤの制御 (AS_Left が -10 未満、+10 より大きい時に動作)
-  if(AS_Left < -20 || AS_Left > 20){
-    MotorON(WHEEL_L, AS_Left);
+
+  // --- ★左タイヤの制御 ---
+  if(abs(AS_Left) > 20){
+    float input = abs(AS_Left);
+    
+    // 同じ計算式
+    float output = pow(input-127, 1.8) / 48.0;
+
+    if(AS_Left > 0){
+       MotorON(WHEEL_L, (int)output);
+    } else {
+       MotorON(WHEEL_L, (int)-output);
+    }
   }
   else{
     MotorOFF(WHEEL_L);
@@ -136,4 +160,5 @@ void Roller(void){
     RollerSeq = 0;                  //ローラー回転シーケンスをリセット
   }
 }
+
 
